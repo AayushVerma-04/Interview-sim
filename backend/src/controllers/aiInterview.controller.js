@@ -29,7 +29,6 @@ const aiResumeFile = asyncHandler(async(req, res) => {
         const docResume = await fileLoading(resumeFile.path);
 
         if (!docResume) {
-
             return res.status(400).json(new ApiResponse(400, "Resume file is empty or not valid"));
         }
 
