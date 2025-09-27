@@ -200,5 +200,6 @@ export {
     getCurrentUser,
     test,
     verifyToken,
-    getCurentUserWithUserHistory
+    getCurentUserWithUserHistory,
+    refreshAccessToken
 }

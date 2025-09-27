@@ -64,7 +64,7 @@ const AIInterview = () => {
   const [transcript, setTranscript] = useState('');
   const [finalTranscript, setFinalTranscript] = useState('');
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [tabSwitchCount, setTabSwitchCount] = useState(0);
+  // const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [interviewMode, setInterviewMode] = useState('Guided Mode');
   const [isMobileView, setIsMobileView] = useState(false);
@@ -78,51 +78,51 @@ const AIInterview = () => {
 
 
   useEffect(() => {
-    let isHandlingVisibilityChange = false;
+    // let isHandlingVisibilityChange = false;
     
-    const handleVisibilityChange = () => {
-      if (isHandlingVisibilityChange) return;
+    // const handleVisibilityChange = () => {
+    //   if (isHandlingVisibilityChange) return;
       
-      if (document.hidden && isInterviewActive) {
-        isHandlingVisibilityChange = true;
+    //   if (document.hidden && isInterviewActive) {
+    //     isHandlingVisibilityChange = true;
 
-        setTabSwitchCount(prevCount => {
-          const newCount = prevCount + 1;
+    //     setTabSwitchCount(prevCount => {
+    //       const newCount = prevCount + 1;
           
-          if (newCount >= 3) {
-            setIsInterviewActive(false);
-            stopAllMedia();
+    //       if (newCount >= 3) {
+    //         setIsInterviewActive(false);
+    //         stopAllMedia();
             
-            axios.post('/api/v1/ai/aiAnalysis', { sessionId }).catch(error => {
-              console.error('Error in background analysis:', error);
-            });
+    //         axios.post('/api/v1/ai/aiAnalysis', { sessionId }).catch(error => {
+    //           console.error('Error in background analysis:', error);
+    //         });
             
-            toast.error('Interview ended! You switched tabs 3 times. You can check interview analysis in the dashboard after some time', {
-              autoClose: 5000,
-              closeButton: true,
-              closeOnClick: true,
-              draggable: true
-            });
+    //         toast.error('Interview ended! You switched tabs 3 times. You can check interview analysis in the dashboard after some time', {
+    //           autoClose: 5000,
+    //           closeButton: true,
+    //           closeOnClick: true,
+    //           draggable: true
+    //         });
             
-            setTimeout(() => navigate('/'), 1500);
-          } else {
-            const remainingChances = 3 - newCount;
-            toast.warning(`Warning ${newCount}/3: Tab switching detected! You have ${remainingChances} chance${remainingChances > 1 ? 's' : ''} left before the interview ends.`, {
-              autoClose: 4000,
-              closeButton: true,
-              closeOnClick: true,
-              draggable: true
-            });
-          }
+    //         setTimeout(() => navigate('/'), 1500);
+    //       } else {
+    //         const remainingChances = 3 - newCount;
+    //         toast.warning(`Warning ${newCount}/3: Tab switching detected! You have ${remainingChances} chance${remainingChances > 1 ? 's' : ''} left before the interview ends.`, {
+    //           autoClose: 4000,
+    //           closeButton: true,
+    //           closeOnClick: true,
+    //           draggable: true
+    //         });
+    //       }
           
-          return newCount;
-        });
+    //       return newCount;
+    //     });
         
-        setTimeout(() => {
-          isHandlingVisibilityChange = false;
-        }, 500);
-      }
-    };
+    //     setTimeout(() => {
+    //       isHandlingVisibilityChange = false;
+    //     }, 500);
+    //   }
+    // };
 
     const handleBeforeUnload = (e) => {
       if (isInterviewActive) {
@@ -136,11 +136,11 @@ const AIInterview = () => {
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      // document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [isInterviewActive, sessionId, navigate]);
@@ -177,53 +177,53 @@ const AIInterview = () => {
   }, [isTooltipOpen, isMobileView]);
 
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.altKey && event.key === 'Tab' && isInterviewActive) {
-        event.preventDefault(); 
+  // useEffect(() => {
+  //   const handleKeyDown = (event) => {
+  //     if (event.altKey && event.key === 'Tab' && isInterviewActive) {
+  //       event.preventDefault(); 
         
-        toast.warning('⚠️ Warning: Switching tabs during interview is not allowed!', {
-          position: "top-center",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            backgroundColor: '#ff9800',
-            color: 'white',
-            fontWeight: 'bold'
-          }
-        });
-      }
+  //       toast.warning('⚠️ Warning: Switching tabs during interview is not allowed!', {
+  //         position: "top-center",
+  //         autoClose: 4000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         style: {
+  //           backgroundColor: '#ff9800',
+  //           color: 'white',
+  //           fontWeight: 'bold'
+  //         }
+  //       });
+  //     }
       
-      if (event.metaKey && event.key === 'Tab' && isInterviewActive) {
-        event.preventDefault();
+  //     if (event.metaKey && event.key === 'Tab' && isInterviewActive) {
+  //       event.preventDefault();
         
-        toast.warning('⚠️ Warning: Switching applications during interview is not allowed!', {
-          position: "top-center",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            backgroundColor: '#ff9800',
-            color: 'white',
-            fontWeight: 'bold'
-          }
-        });
-      }
-    };
+  //       toast.warning('⚠️ Warning: Switching applications during interview is not allowed!', {
+  //         position: "top-center",
+  //         autoClose: 4000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         style: {
+  //           backgroundColor: '#ff9800',
+  //           color: 'white',
+  //           fontWeight: 'bold'
+  //         }
+  //       });
+  //     }
+  //   };
 
-    if (isInterviewActive) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
+  //   if (isInterviewActive) {
+  //     document.addEventListener('keydown', handleKeyDown);
+  //   }
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isInterviewActive]);
+  //   return () => {
+  //     document.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, [isInterviewActive]);
 
   useEffect(() => {
     const stateData = location.state || {};

@@ -9,12 +9,11 @@ import { HistorySession } from "../models/userHistory.models.js";
 import fs from 'fs/promises';
 import dotenv from "dotenv";
 import {v4 as uuidv4} from "uuid";
-import { io } from "../app.js";
-import {generateWavFile} from "../utils/tts.js"
+// import { io } from "../app.js";
+// import {generateWavFile} from "../utils/tts.js"
 import {generateAudioFile} from "../utils/ai/googleTts.js"
 
 dotenv.config({ path: '../../.env' });
-
 
 
 const aiResumeFile = asyncHandler(async(req, res) => {
