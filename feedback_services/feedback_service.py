@@ -9,19 +9,6 @@ app = FastAPI()
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-import os
-from urllib.parse import urlparse
-
-from dotenv import load_dotenv
-
-# Load .env file from backend folder
-# load_dotenv("../backend/.env")  # relative path from Python service
-
-# redis_url = os.getenv("REDIS_URL")
-# url = urlparse(redis_url)
-# print(redis_url)
-
-# Extract connection info
 redis_client = redis.Redis(
     host='redis-11760.c330.asia-south1-1.gce.redns.redis-cloud.com',
     port=11760,
@@ -32,9 +19,9 @@ redis_client = redis.Redis(
 
 try:
     redis_client.ping()
-    print("✅ Connected to Redis Cloud!")
+    print("Connected to Redis Cloud!")
 except redis.ConnectionError as e:
-    print("❌ Redis connection failed:", e)
+    print("Redis connection failed:", e)
 
 
 class FeedbackRequest(BaseModel):
@@ -128,4 +115,4 @@ sample_data = {
 }
 
 redis_client.hset(session_id, mapping=sample_data)
-print("✅ Test data uploaded to Redis Cloud!")
+print("Test data uploaded to Redis Cloud!")
