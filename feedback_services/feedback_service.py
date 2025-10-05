@@ -4,17 +4,21 @@ import redis
 import json
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
+from dotenv import load_dotenv
+import os
 
 app = FastAPI()
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
+load_dotenv(".env")
+print(os.getenv("host"))
 redis_client = redis.Redis(
-    host='redis-11760.c330.asia-south1-1.gce.redns.redis-cloud.com',
+    host=str(os.getenv("host")),
     port=11760,
     decode_responses=True,
     username="default",
-    password="A0g6zmzMpxwPV5o39Y227QamMm5WLuau",
+    password=str(os.getenv("password")),
 )
 
 try:
