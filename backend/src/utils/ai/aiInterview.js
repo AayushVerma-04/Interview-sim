@@ -18,7 +18,7 @@ const aiInterview = async (
   numberOfQuestionLeft, 
   experienceLevel, 
   previousConversation, 
-  user="Let’s start the interview.", 
+  user="Let's start the interview.", 
   interviewMode="Guided Mode") => {
 
   if (user.startsWith("//explain")) {
@@ -83,7 +83,6 @@ const aiInterview = async (
   - Experience Level: ${experienceLevel}
   - Resume: ${resume}
   - Interview Mode: ${interviewMode}
-  // --- FIX 3: Properly serialize the conversation history for the AI ---
   - Conversation History: ${JSON.stringify(previousConversation, null, 2)}
 
   2. YOUR INTERVIEWING METHODOLOGY (HOW TO ASK QUESTIONS):

@@ -128,8 +128,8 @@ const MockInterviewWay = () => {
     "10+ years",
   ];
   const [experience, setExperience] = useState(experienceLevels[0]);
-  const interviewModes = ["Guided Mode", "Hard Mode"];
-  const [interviewMode, setInterviewMode] = useState(interviewModes[0]);
+  // const interviewModes = ["Guided Mode", "Hard Mode"];
+  // const [interviewMode, setInterviewMode] = useState(interviewModes[0]);
   const interviewRounds = ["HR", "System Design", "Coding (DSA)", "Technical"];
   const [interviewRound, setInterviewRound] = useState(interviewRounds[0]);
   const [resumeFile, setResumeFile] = useState(null);
@@ -143,8 +143,8 @@ const MockInterviewWay = () => {
     setNumQuestions(event.target.value);
   const handleExperienceChange = (event) => setExperience(event.target.value);
   const handlePositionChange = (event) => setPosition(event.target.value);
-  const handleInterviewModeChange = (event) =>
-    setInterviewMode(event.target.value);
+  // const handleInterviewModeChange = (event) =>
+  //   setInterviewMode(event.target.value);
   const handleInterviewRoundChange = (event) =>
     setInterviewRound(event.target.value);
   const handleFileUpload = async (event) => {
@@ -284,7 +284,8 @@ const MockInterviewWay = () => {
           position: position,
           experienceLevel: experience,
           numberOfQuestionYouShouldAsk: numQuestions,
-          interviewMode: interviewMode,
+          interviewMode: 'Guided Mode',
+          // interviewRound: interviewRound,
         },
         {
           withCredentials: true,
@@ -300,7 +301,8 @@ const MockInterviewWay = () => {
           state: {
             sessionId: currentSessionId,
             numberOfQuestions: response.data.data.numberOfQuestion,
-            interviewMode: interviewMode,
+            interviewMode: 'Guided Mode',
+            // interviewRound: interviewRound,
           },
           replace: true,
         });
@@ -688,7 +690,7 @@ const MockInterviewWay = () => {
                   </FormControl>
                 </motion.div>
 
-                <motion.div
+                {/* <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.45 }}
@@ -802,12 +804,12 @@ const MockInterviewWay = () => {
                       ))}
                     </Select>
                   </FormControl>
-                </motion.div>
+                </motion.div> */}
 
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.475 }}
+                  transition={{ delay: 0.45 }}
                 >
                   <FormControl fullWidth variant="outlined">
                     <InputLabel

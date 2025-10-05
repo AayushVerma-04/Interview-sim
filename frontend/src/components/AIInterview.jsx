@@ -460,28 +460,7 @@ const AIInterview = () => {
       videoElement.srcObject = null;
     }
   }, [stream]);
-
-  const playAudio = (audioUrl) => {
-    if (!audioUrl) return;
-    
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    
-    audioRef.current = new Audio(audioUrl);
-    
-    audioRef.current.onplay = () => setIsAudioPlaying(true);
-    audioRef.current.onended = () => setIsAudioPlaying(false);
-    audioRef.current.onpause = () => setIsAudioPlaying(false);
-    audioRef.current.onerror = () => setIsAudioPlaying(false);
-    
-    audioRef.current.play().catch(e => {
-      console.error('Error playing audio:', e);
-      setIsAudioPlaying(false);
-    });
-  };
-
+  
   const playAudioFromBase64 = (audioBase64) => {
     if (!audioBase64) return;
     
@@ -524,6 +503,28 @@ const AIInterview = () => {
       setIsAudioPlaying(false);
     }
   };
+  
+  const playAudio = (audioUrl) => {
+    if (!audioUrl) return;
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    
+    audioRef.current = new Audio(audioUrl);
+    
+    audioRef.current.onplay = () => setIsAudioPlaying(true);
+    audioRef.current.onended = () => setIsAudioPlaying(false);
+    audioRef.current.onpause = () => setIsAudioPlaying(false);
+    audioRef.current.onerror = () => setIsAudioPlaying(false);
+    
+    audioRef.current.play().catch(e => {
+      console.error('Error playing audio:', e);
+      setIsAudioPlaying(false);
+    });
+  };
+
 
   const playAudioFromBuffer = (audioBuffer) => {
     if (!audioBuffer) return;
@@ -866,7 +867,7 @@ const AIInterview = () => {
           });
           
           setIsInterviewActive(true);
-          setTabSwitchCount(0);
+          // setTabSwitchCount(0);
           
           setTimeout(() => {
             startSpeechRecognition();
@@ -1094,7 +1095,7 @@ const AIInterview = () => {
           </Box>
           
           {/* Mode Display */}
-          <Box sx={{ mt: { xs: 1, md: 2 } }}>
+          {/*<Box sx={{ mt: { xs: 1, md: 2 } }}>
             <Paper
               sx={{
                 p: 2,
@@ -1117,9 +1118,9 @@ const AIInterview = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Mode:
+                 Mode: 
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   {interviewMode === 'Guided Mode' ? (
                     <SchoolIcon sx={{ fontSize: 18, color: '#00bfa5' }} />
                   ) : (
@@ -1135,10 +1136,10 @@ const AIInterview = () => {
                   >
                     {interviewMode}
                   </Typography>
-                </Box>
+                </Box> 
               </Box>
             </Paper>
-          </Box>
+          </Box>*/}
           
         </Paper>
 
@@ -1323,7 +1324,7 @@ const AIInterview = () => {
                     }}>
                       📋 Important Instructions:
                     </Typography>
-                    <Typography variant="body2" sx={{ 
+                    {/* <Typography variant="body2" sx={{ 
                       mb: 1, 
                       color: '#ffffff',
                       fontWeight: 500,
@@ -1331,7 +1332,7 @@ const AIInterview = () => {
                       fontSize: { xs: '0.8rem', md: '0.9rem' }
                     }}>
                       • Tab switching is monitored - after 3 tab switches, your interview will end automatically
-                    </Typography>
+                    </Typography> */}
                     <Typography variant="body2" sx={{ 
                       mb: 1, 
                       color: '#ffffff',
@@ -1358,7 +1359,7 @@ const AIInterview = () => {
                     }}>
                       • For new line in your response: Press Shift + Enter
                     </Typography>
-                  {interviewMode === 'Guided Mode' && (
+                  {/* {interviewMode === 'Guided Mode' && (
                       <>
                         <Typography 
                           variant="body2" 
@@ -1382,7 +1383,7 @@ const AIInterview = () => {
                           <span style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>•</span> After explanation, to get next question type <code>//yes</code>
                         </Typography>
                       </>
-                    )}
+                    )} */}
                   </Box>
                 }
                 placement="bottom-start"
@@ -1563,7 +1564,7 @@ const AIInterview = () => {
                   
                   <Box sx={{ textAlign: 'left' }}>
 
-                    <Typography 
+                    {/* <Typography 
                       variant="body2" 
                       sx={{ 
                         color: 'var(--text-secondary)',
@@ -1576,7 +1577,7 @@ const AIInterview = () => {
                     >
                       <span style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>•</span>
                       Tab switching is monitored - after 3 tab switches, your interview will end automatically
-                    </Typography>
+                    </Typography> */}
                     
                     <Typography 
                       variant="body2" 
@@ -1621,7 +1622,7 @@ const AIInterview = () => {
                       <span style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>•</span>
                       For new line in your response: Press Shift + Enter
                     </Typography>
-                  {interviewMode === 'Guided Mode' && (
+                  {/* {interviewMode === 'Guided Mode' && (
                       <>
                         <Typography 
                           variant="body2" 
@@ -1653,7 +1654,7 @@ const AIInterview = () => {
                           After explanation, to get next question type //yes
                         </Typography>
                       </>
-                    )}
+                    )} */}
                     
                   </Box>
                 </Paper>

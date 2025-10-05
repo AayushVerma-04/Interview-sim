@@ -29,10 +29,10 @@ const router = createBrowserRouter(
       {" "}
       <Route path="/" element={<Layout />}>
         <Route path="" element={<HomePage />} />
-        <Route path="features" element={<Features />} />
+        {/* <Route path="features" element={<Features />} /> */}
         {/* <Route path="comingSoon" element={<ComingSoon />} /> */}
         
-        <Route path="pricing" element={<Pricing />} />
+        {/* <Route path="pricing" element={<Pricing />} /> */}
         
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />

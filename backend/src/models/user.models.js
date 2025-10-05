@@ -33,12 +33,6 @@ const userSchema = new mongoose.Schema({
     },
     refreshToken: {
         type: String
-    },
-    role: {
-        type: String,
-        enum: ["student", "company"],
-        default: "student",
-        required: true, 
     }
 },{timestamps: true})
 

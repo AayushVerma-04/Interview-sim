@@ -156,3 +156,5 @@ dist
 # Backend uploads directory (temporary files)
 backendAiInterview/uploads/*
 !backendAiInterview/uploads/.gitkeep
+
+.vscode

@@ -10,7 +10,6 @@ import fs from 'fs/promises';
 import dotenv from "dotenv";
 import {v4 as uuidv4} from "uuid";
 // import { io } from "../app.js";
-// import {generateWavFile} from "../utils/tts.js"
 import {generateAudioFile} from "../utils/ai/googleTts.js"
 
 dotenv.config({ path: '../../.env' });
@@ -107,10 +106,8 @@ const aiInterviewStart = async(sessionId, answer)=>{
             console.error('Error parsing messages:', parseError);
             messages = [];
         }
-
         
-        
-    const lowerCaseAnswer = answer.toLowerCase();
+        const lowerCaseAnswer = answer.toLowerCase();
         if (!lowerCaseAnswer.startsWith("//explain") &&  
             !lowerCaseAnswer.startsWith("//ask") && 
             !lowerCaseAnswer.startsWith("start the interview") &&
@@ -152,12 +149,14 @@ const aiInterviewStart = async(sessionId, answer)=>{
                 multi.hset(sessionId, 'messages', JSON.stringify(messages));
             }
         }
+        
         let questionLeft
         if (!answer.startsWith("//explain")){
-        questionLeft=data.numberOfQuestionLeft -1
+            questionLeft=data.numberOfQuestionLeft -1
             if (questionLeft <=0){
                 questionLeft=0
             }
+
         multi.hincrby(sessionId, 'numberOfQuestionLeft', -1)};
         multi.hincrby(sessionId, 'count', 1);
 
@@ -171,9 +170,9 @@ const aiInterviewStart = async(sessionId, answer)=>{
 
         let result;
         if(ai.explanation && ai.question){
-            result=ai.explanation
+            result = ai.explanation
         }else{
-            result=ai.question
+            result = ai.question
         }
 
         const payload = {

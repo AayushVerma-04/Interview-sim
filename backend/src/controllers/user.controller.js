@@ -21,7 +21,7 @@ const generateAccessAndRefreshToken  = async(userId)=>{
 }
 
 const userSignUp = asyncHandler(async(req, res)=>{
-    const {username, fullName, email, password, role} = req.body
+    const {username, fullName, email, password} = req.body
 
     if(
         [username, fullName, email, password].some((field)=> field?.trim() === "")
@@ -46,7 +46,7 @@ const userSignUp = asyncHandler(async(req, res)=>{
         username: username,
         email: email, 
         password: password,
-        role: role,
+        // role: role,
     })
 
     const userCreation = await User.findById(newUser._id)
@@ -87,12 +87,6 @@ const userLogin = asyncHandler(async(req, res)=>{
 
     const loggedUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const options = {
-        httpOnly: true, 
-        secure: true,
-        sameSite: 'none',
-    }
-
     return res.status(200)
     .cookie("accessToken", accessToken)
     .cookie("refreshToken", refreshToken)
@@ -121,10 +115,9 @@ const userLogout  = asyncHandler(async(req, res)=>{
     .json(new ApiResponse(200, {}, "You are logout"))
 })
 
-
 const getCurrentUser = asyncHandler(async(req, res)=>{
     return res.status(200).json(
-        new ApiResponse(200, req.user, "Current user fectehed successfully")
+        new ApiResponse(200, req.user, "Current user fetched successfully")
     )
 })
 
@@ -147,13 +140,7 @@ const refreshAccessToken = asyncHandler(async(req, res)=>{
             throw new ApiError(401, "Refresh Token is expired or used");
         }
 
-        const {newRefreshToken, newAccessToken} = await generateAccessAndRefreshToken(user._id);
-
-        const options = {
-            httpOnly: true, 
-            secure: true,
-            sameSite:'none',
-        }
+        const {newAccessToken, newRefreshToken} = await generateAccessAndRefreshToken(user._id);
 
         return res.status(200)
         .cookie("accessToken", newAccessToken)
@@ -169,7 +156,7 @@ const refreshAccessToken = asyncHandler(async(req, res)=>{
 
 const test = asyncHandler(async(req, res)=>{
     try {
-        return res.json("ALl good")
+        return res.json("All good")
     } catch (error) {
         throw new ApiError(401, "Unauthorized access")
     }
