@@ -78,52 +78,6 @@ const AIInterview = () => {
 
 
   useEffect(() => {
-    // let isHandlingVisibilityChange = false;
-    
-    // const handleVisibilityChange = () => {
-    //   if (isHandlingVisibilityChange) return;
-      
-    //   if (document.hidden && isInterviewActive) {
-    //     isHandlingVisibilityChange = true;
-
-    //     setTabSwitchCount(prevCount => {
-    //       const newCount = prevCount + 1;
-          
-    //       if (newCount >= 3) {
-    //         setIsInterviewActive(false);
-    //         stopAllMedia();
-            
-    //         axios.post('/api/v1/ai/aiAnalysis', { sessionId }).catch(error => {
-    //           console.error('Error in background analysis:', error);
-    //         });
-            
-    //         toast.error('Interview ended! You switched tabs 3 times. You can check interview analysis in the dashboard after some time', {
-    //           autoClose: 5000,
-    //           closeButton: true,
-    //           closeOnClick: true,
-    //           draggable: true
-    //         });
-            
-    //         setTimeout(() => navigate('/'), 1500);
-    //       } else {
-    //         const remainingChances = 3 - newCount;
-    //         toast.warning(`Warning ${newCount}/3: Tab switching detected! You have ${remainingChances} chance${remainingChances > 1 ? 's' : ''} left before the interview ends.`, {
-    //           autoClose: 4000,
-    //           closeButton: true,
-    //           closeOnClick: true,
-    //           draggable: true
-    //         });
-    //       }
-          
-    //       return newCount;
-    //     });
-        
-    //     setTimeout(() => {
-    //       isHandlingVisibilityChange = false;
-    //     }, 500);
-    //   }
-    // };
-
     const handleBeforeUnload = (e) => {
       if (isInterviewActive) {
         axios.post('/api/v1/ai/aiAnalysis', { sessionId }).catch(error => {
@@ -136,11 +90,9 @@ const AIInterview = () => {
       }
     };
 
-    // document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      // document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [isInterviewActive, sessionId, navigate]);
@@ -285,6 +237,15 @@ const AIInterview = () => {
     };
 
     const initializeSocket = () => {
+      // Clean up existing socket connection
+      if (socketRef.current) {
+        socketRef.current.off('aiInterview');
+        socketRef.current.off('aiError');
+        socketRef.current.off('connect');
+        socketRef.current.off('disconnect');
+        socketRef.current.off('connect_error');
+        socketRef.current.disconnect();
+      }
 
       let token = getAccessToken();
       let tokenSource = 'localStorage';
@@ -353,6 +314,14 @@ const AIInterview = () => {
       socket.on('aiInterview', (data) => {
         setIsLoading(false);
         setIsStartingInterview(false); 
+
+        console.log('Active', isInterviewActive)
+        
+        // Use a state update callback to ensure we have the latest state
+        // setIsInterviewActive(currentIsActive => {
+        //   console.log('Current interview state:', currentIsActive);
+        //   return currentIsActive;
+        // });
         
         if (data && data.result) {
           const aiResponse = data.result;
@@ -388,7 +357,9 @@ const AIInterview = () => {
           }
           
           if (aiResponse.includes("Your interview is over")) {
-            setTimeout(() => toggleInterview(), 6000);
+            console.log('Interview concluded by AI.');
+            setIsInterviewActive(true); // Ensure the state is true before calling toggleInterview
+            setTimeout(() => toggleInterview(true), 6000);
           }
         } else {
           console.error('Invalid AI response data:', data);
@@ -845,7 +816,31 @@ const AIInterview = () => {
     }
   };
 
-  const toggleInterview = async () => {
+  const toggleInterview = async (val) => {
+    if (val === true) {
+      setIsInterviewActive(false);
+      setCurrentQuestion(0);
+      stopAllMedia();
+      
+      sessionStorage.removeItem('interviewSessionId');
+      sessionStorage.removeItem('numberOfQuestions');
+      sessionStorage.removeItem('interviewMode');
+
+      axios.post('/api/v1/ai/aiAnalysis', { sessionId }).catch(error => {
+        console.error('Error in background analysis:', error);
+      });
+
+      toast.success('You can check interview analysis in the dashboard after some time', {
+        autoClose: 3000,
+        closeButton: true,
+        closeOnClick: true,
+        draggable: true
+      });
+      
+      navigate('/');
+      return;
+    }
+    console.log('Toggling interview. Current state:', isInterviewActive);
     if (!isInterviewActive) {
       const mediaStarted = await startMedia();
       if (!mediaStarted) return;

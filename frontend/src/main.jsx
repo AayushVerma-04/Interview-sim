@@ -14,7 +14,6 @@ import LoginPage from "./components/LoginPage.jsx";
 import AIInterview from "./components/AIInterview.jsx";
 // import LayoutWithoutFooter from "./components/LayoutWithoutFooter.jsx";
 import Features from "./components/Features.jsx";
-import Pricing from "./components/Pricing.jsx";
 // import ComingSoon from "./components/ComingSoon.jsx";
 import UserDashboard from "./components/UserDashboard.jsx";
 import { ToastContainer } from "react-toastify";
@@ -32,7 +31,6 @@ const router = createBrowserRouter(
         {/* <Route path="features" element={<Features />} /> */}
         {/* <Route path="comingSoon" element={<ComingSoon />} /> */}
         
-        {/* <Route path="pricing" element={<Pricing />} /> */}
         
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />

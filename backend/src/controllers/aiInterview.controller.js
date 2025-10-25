@@ -22,6 +22,7 @@ const aiResumeFile = asyncHandler(async (req, res) => {
 
   try {
     const sessionId = uuidv4();
+    console.log("Generated sessionId:", sessionId);
 
     const docResume = await fileLoading(resumeFile.path);
 
@@ -195,6 +196,91 @@ function safeParse(value, fallback) {
   }
 }
 
+import axios from "axios";
+
+const FASTAPI_URL = process.env.FEEDBACK_API_URL || "http://127.0.0.1:8000/generate-feedback";
+
+const nlpInterviewAnalysis = asyncHandler(async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    if (!sessionId) throw new ApiError(400, "Session ID is required");
+
+    // Fetch session data from Redis
+    const data = await client.hgetall(sessionId);
+    if (!data || Object.keys(data).length === 0)
+      throw new ApiError(404, "Session not found or is empty.");
+
+    // ✅ Call the Python FastAPI microservice instead of aiAnalysis
+    const fastApiResponse = await axios.post(FASTAPI_URL, { sessionId });
+
+    const aiResponse = fastApiResponse.data;
+
+    // Adapt FastAPI’s response to your schema
+    const qaItemsArray = aiResponse.analysis.map((item) => ({
+      question: item.question,
+      userAnswer: item.userAnswer,
+      feedback: item.feedback || "",
+      rating: item.rating || 0,
+      suggestedAnswer: item.suggestedAnswer,
+      technicalKnowledge: item.technicalKnowledge || null,
+      problemSolvingSkills: item.problemSolvingSkills || null,
+      communicationClarity: item.communicationClarity || null,
+    }));
+
+    let parsedExplanations = [];
+    try {
+      if (data.aiExplanation && typeof data.aiExplanation === "string") {
+        parsedExplanations = JSON.parse(data.aiExplanation);
+      }
+    } catch (parseError) {
+      console.error("Failed to parse aiExplanation JSON string:", parseError);
+      parsedExplanations = [];
+    }
+
+    const validModes = ["Guided Mode", "Hard Mode"];
+    const interviewMode = validModes.includes(data.interviewMode)
+      ? data.interviewMode
+      : "Guided Mode";
+
+    // ✅ Construct the new History record
+    const newHistoryEntry = {
+      interviewName: aiResponse.interviewName || "AI Interview Session",
+      userId: data.userId,
+      resumeSummary: aiResponse.resumeSummary,
+      experienceLevel: data.experienceLevel,
+      position: data.position,
+      interviewMode: interviewMode,
+      mockType: data.mockType || "Mock Interview",
+      numberOfQuestions: qaItemsArray.length,
+      overAllRating: aiResponse.overAllRating || 0,
+      qaItems: qaItemsArray,
+      explanations: parsedExplanations,
+    };
+
+    const savedSession = await HistorySession.create(newHistoryEntry);
+    if (!savedSession)
+      throw new ApiError(500, "Failed to save the interview session to the database.");
+
+    // ✅ Clean up Redis session
+    await client.del(sessionId);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        savedSession,
+        "Interview analysis completed successfully (via FastAPI)"
+      )
+    );
+  } catch (error) {
+    console.error("Error in aiInterviewAnalysis controller:", error);
+    const statusCode = error instanceof ApiError ? error.statusCode : 500;
+    return res
+      .status(statusCode)
+      .json(new ApiResponse(statusCode, null, error.message));
+  }
+});
+
+
 
 const aiInterviewAnalysis = asyncHandler(async (req, res) => {
   try {
@@ -343,4 +429,5 @@ export {
   aiInterviewAnalysis,
   aiHistory,
   aiResumeFile,
+  nlpInterviewAnalysis,
 };

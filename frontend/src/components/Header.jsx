@@ -65,8 +65,6 @@ const scaleUp = {
 
 const navItems = [
   { name: "Mock Interview", path: "/mockInterviewWay" },
-  // { name: "Features", path: "/features" },
-  // { name: "Pricing", path: "/pricing" },
 ];
 
 const Header = () => {

@@ -718,6 +718,25 @@ export default memo(function UserDashboard() {
                                   </Box>
                                   {q.feedback || 'No feedback available'}
                                 </Typography>
+                                <Typography component="div" sx={{ 
+                                  color: 'rgba(255, 255, 255, 0.85)', 
+                                  fontSize: '0.85rem',
+                                  lineHeight: 1.6,
+                                  p: 2,
+                                  bgcolor: 'rgba(255, 255, 255, 0.03)',
+                                  borderRadius: '8px',
+                                  mb: 2
+                                }}>
+                                  <Box component="span" sx={{ 
+                                    color: '#1de9b6', 
+                                    fontWeight: 600,
+                                    display: 'block',
+                                    mb: 1
+                                  }}>
+                                    Suggested Answer:
+                                  </Box>
+                                  {q.suggestedAnswer || 'No answer available'}
+                                </Typography>
                                 
                                 {/* Technical Breakdown */}
                                 {(q.technicalKnowledge !== undefined || q.problemSolvingSkills !== undefined || q.communicationClarity !== undefined) && (

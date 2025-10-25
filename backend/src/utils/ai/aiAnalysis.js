@@ -1,6 +1,6 @@
 import {llmPro} from "./llm.js";
 import { z } from "zod";
-
+import {sampleOutput} from "../../test_data/analysis-data.js";
 
 const outputSchema = z.object({
   overAllRating: z.number()
@@ -27,6 +27,11 @@ const outputSchema = z.object({
   ).describe("An array of objects, where each object is an analysis of a single question and answer.")
 });
 const aiAnalysis = async (resume, position, experienceLevel, chatHistory) => {
+
+  if (process.env.NODE_ENV === 'test') {
+    return sampleOutput;
+  }
+
   const systemPrompt = `You are an expert AI analyst and seasoned technical hiring manager. Your objective is to perform a comprehensive, unbiased analysis of a job interview and provide structured, actionable feedback in a specific JSON format.
 
   1. YOUR ANALYSIS FRAMEWORK & TASKS:

@@ -1,7 +1,7 @@
 import axios from "axios";
-import client from "../reddisClient.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import ApiError from "../utils/ApiError.js";
+import client from "../utils/reddisClient.js";
+import {ApiResponse} from "../utils/ApiResponse.js";
+import {ApiError} from "../utils/ApiError.js";
 
 export const generateFeedbackController = async (req, res) => {
   try {

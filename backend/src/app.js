@@ -11,6 +11,10 @@ dotenv.config({
   path: "./.env",
 });
 
+if (process.env.NODE_ENV == 'test') {
+  console.log("Running in test mode");
+}
+
 const app = express();
 const server = http.createServer(app);
 

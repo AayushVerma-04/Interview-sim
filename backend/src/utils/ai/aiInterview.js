@@ -1,6 +1,7 @@
 import { llmFalse } from "./llm.js";
 import { z } from "zod";
 import client from "../reddisClient.js";
+import { sampleInterviewData } from "../../test_data/interview-data.js";
 
 const interviewOutputSchema = z.object({
   question: z.string().describe("The next interview question to ask the candidate."),
@@ -45,6 +46,13 @@ STRICT INSTRUCTIONS:
 2. Do NOT ask a new question.
 3. After your explanation, you MUST end your response with the exact phrase: "type //yes for next question".`;
 
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        question: lastAI.content,
+        explanation: "This is a test explanation. It provides a simplified overview of the concept. type //yes for next question"
+      };
+    }
+
     const structuredExplainerLlm = llmFalse.withStructuredOutput(explanationOutputSchema);
 
     const explanationResponse = await structuredExplainerLlm.invoke([
@@ -60,7 +68,12 @@ STRICT INSTRUCTIONS:
 
   // End of interview block
   if (numberOfQuestionLeft <= 0) {
-    const endSystemPromt = `You are a helpful assistant whose only job is to formally end an interview. You will be given the entire interview conversation for context, but you will not comment on it.
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        question: "Your interview is over. Thank you for speaking with me today. You can see the detail analysis of this interview in your profile in some time."
+      };
+    }
+    const endSystemPrompt = `You are a helpful assistant whose only job is to formally end an interview. You will be given the entire interview conversation for context, but you will not comment on it.
 YOUR TASK:
 Provide a polite, standardized closing statement.
 STRICT OUTPUT REQUIREMENTS:
@@ -74,10 +87,15 @@ Example Output:
 "Your interview is over. Thank you for speaking with me today. You can see the detail analysis of this interview in your profile in some time."`;
 
     const endResponse = await llmFalse.invoke([
-      { role: "system", content: endSystemPromt },
+      { role: "system", content: endSystemPrompt },
       { role: "user", content: "The interview is over." }
     ]);
     return { question: endResponse.content };
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    const randomIndex = Math.floor(Math.random() * sampleInterviewData.length);
+    return sampleInterviewData[randomIndex];
   }
 
   // Main system prompt with reference answer requirement
@@ -112,6 +130,7 @@ Example Output:
   "referenceAnswer": "A REST API uses HTTP methods (GET, POST, PUT, DELETE) to perform CRUD operations. Each resource is identified by a URI, and communication is stateless."
 }
 `;
+
 
   const structuredLlm = llmFalse.withStructuredOutput(interviewOutputSchema);
 

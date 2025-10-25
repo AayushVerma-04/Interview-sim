@@ -15,7 +15,7 @@ load_dotenv(".env")
 print(os.getenv("host"))
 redis_client = redis.Redis(
     host=str(os.getenv("host")),
-    port=11760,
+    port=int(os.getenv("port")),
     decode_responses=True,
     username="default",
     password=str(os.getenv("password")),
@@ -71,8 +71,8 @@ def generate_feedback(req: FeedbackRequest):
         question_analysis.append({
             "question": question,
             "userAnswer": user_answer,
-            "referenceAnswer": ref_answer,
-            "score": score
+            "rating": score,
+            "suggestedAnswer": ref_answer
         })
 
     overall_score = round(np.mean(scores), 2) if scores else 0
@@ -80,21 +80,32 @@ def generate_feedback(req: FeedbackRequest):
 
     feedback_payload = {
         "resumeSummary": resume_summary,
-        "overallScore": overall_score,
-        "questionAnalysis": question_analysis
+        "overAllRating": overall_score,
+        "analysis": question_analysis
     }
 
     return feedback_payload
 
 
-def summarize_resume(resume_text: str):
-    """Simple rule-based summarizer"""
-    if not resume_text:
-        return "No resume provided."
-    lines = [line.strip() for line in resume_text.split("\n") if line.strip()]
-    keywords = ["experience", "project", "skill", "education", "intern"]
-    important = [line for line in lines if any(k in line.lower() for k in keywords)]
-    return " ".join(important[:3]) if important else " ".join(lines[:3])
+import spacy
+
+def summarize_resume(text: str):
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(text)
+
+    entities = {"Name": [], "ORG": [], "EDUCATION": [], "SKILL": []}
+    for ent in doc.ents:
+        if ent.label_ in ["PERSON"]:
+            entities["Name"].append(ent.text)
+        elif ent.label_ in ["ORG"]:
+            entities["ORG"].append(ent.text)
+        elif ent.label_ in ["GPE", "FAC", "NORP"]:
+            entities["EDUCATION"].append(ent.text)
+
+    summary = f"{' '.join(entities['Name'])} has worked with {', '.join(entities['ORG'][:3])}. "\
+              f"Educational background includes {', '.join(entities['EDUCATION'][:2])}."
+    return summary
+
 
 
 #test
@@ -118,5 +129,5 @@ sample_data = {
     ])
 }
 
-redis_client.hset(session_id, mapping=sample_data)
-print("Test data uploaded to Redis Cloud!")
+# redis_client.hset(session_id, mapping=sample_data)
+# print("Test data uploaded to Redis Cloud!")
